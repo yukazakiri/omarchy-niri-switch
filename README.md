@@ -62,3 +62,24 @@ Click the `Hypr` / `Niri` chip in the bar to open the switcher.
 - Your `~/.config/niri/config.kdl` (iNiR) does not spawn
   `omarchy-launch-shell`, which is correct — don't add it or you'll get two
   shells/bars under Niri.
+
+## iNiR autostart under the uwsm session (important)
+
+Stock `niri-session` runs the compositor as the `niri.service` systemd unit,
+and iNiR starts via a `niri.service.wants/inir.service` link with
+`Requisite=niri.service`. But `omarchy-niri.desktop` runs niri directly
+inside `wayland-wm@niri.desktop.service`, so `niri.service` is never active
+and iNiR silently never starts (no shell after login).
+
+Three machine-local changes fix it (all under `~/.config/systemd/user/`):
+
+1. Remove `Requisite=niri.service` from `inir.service` (keep `After=` and
+   `PartOf=` — stock-flow start/stop behavior is unchanged).
+2. `inir.service.d/omarchy-uwsm.conf` drop-in adding
+   `PartOf=wayland-wm@niri.desktop.service`, so iNiR stops with the uwsm
+   session and never leaks into the next Hyprland login.
+3. Wants link `wayland-wm@niri.desktop.service.wants/inir.service`, so iNiR
+   starts on Omarchy-Niri login only — never under Hyprland.
+
+Then `systemctl --user daemon-reload` (and `systemctl --user start
+inir.service` to fix a live session without logging out).
