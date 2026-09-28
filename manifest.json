@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "local.niri-switch",
+  "name": "Niri Switch",
+  "version": "0.2.0",
+  "author": "admin",
+  "description": "Show current compositor and boot target; switch Hyprland/Niri by setting the SDDM autologin session, then logging out.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "Switcher.qml"
+  },
+  "barWidget": {
+    "displayName": "Niri Switch",
+    "description": "Current compositor with logout-to-picker switching",
+    "category": "Compositor",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

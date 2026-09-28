@@ -1,0 +1,58 @@
+#!/bin/bash
+# local-niri-switch-set-session: set the SDDM autologin session target.
+# Runs as root via pkexec (from the bar widget) or sudo (from a terminal).
+# Only ever touches the Session= and Relogin= lines; User= and everything
+# else is preserved.
+#
+# Relogin=true is essential: without it SDDM shows the greeter after logout,
+# and Omarchy's greeter theme has no session picker (it auto-selects the
+# first "uwsm" session = Hyprland), so switching would loop back to Hyprland.
+set -u
+
+target="${1:-}"
+case "$target" in
+  omarchy.desktop|omarchy-niri.desktop) ;;
+  *)
+    echo "local-niri-switch-set-session: refusing unknown session '$target'" >&2
+    exit 2
+    ;;
+esac
+
+conf="/etc/sddm.conf.d/autologin.conf"
+[ -f "$conf" ] || { echo "local-niri-switch-set-session: missing $conf" >&2; exit 1; }
+
+found=0
+for d in /usr/local/share/wayland-sessions /usr/share/wayland-sessions; do
+  if [ -f "$d/$target" ]; then found=1; break; fi
+done
+if [ "$found" != 1 ]; then
+  echo "local-niri-switch-set-session: session not installed: $target" >&2
+  exit 1
+fi
+
+tmp="$(mktemp)" || exit 1
+sed -e "s|^Session=.*|Session=$target|" "$conf" > "$tmp" || exit 1
+if ! grep -qx "Session=$target" "$tmp"; then
+  echo "local-niri-switch-set-session: update failed" >&2
+  rm -f "$tmp"
+  exit 1
+fi
+# SDDM only autologs at boot by default; after a logout it shows the greeter
+# (which has no picker and defaults to Hyprland). Relogin=true makes it log
+# straight back into the target session instead.
+if grep -q '^Relogin=' "$tmp"; then
+  sed -i 's/^Relogin=.*/Relogin=true/' "$tmp" || exit 1
+elif grep -q '^\[Autologin\]' "$tmp"; then
+  awk '{ print } /^\[Autologin\]$/ && !done { print "Relogin=true"; done=1 }' "$tmp" > "$tmp.new" || exit 1
+  mv "$tmp.new" "$tmp" || exit 1
+else
+  printf '\n[Autologin]\nRelogin=true\n' >> "$tmp" || exit 1
+fi
+if ! grep -qx 'Relogin=true' "$tmp"; then
+  echo "local-niri-switch-set-session: relogin update failed" >&2
+  rm -f "$tmp"
+  exit 1
+fi
+cat "$tmp" > "$conf" || exit 1
+rm -f "$tmp"
+echo "Autologin session -> $target (Relogin=true)"

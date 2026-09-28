@@ -1,0 +1,33 @@
+// EXAMPLE Niri config — copy to ~/.config/niri/config.kdl and edit.
+// Minimal starter that launches the Omarchy shell so the bar (including
+// the local.niri-switch widget) works under Niri.
+// See `niri --help` and https://github.com/YaLTeR/niri/wiki/Configuration:-Introduction
+// for the full KDL reference for your Niri version.
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+    }
+}
+
+spawn-at-startup "omarchy-launch-shell"
+spawn-at-startup "omarchy-provision-first-run"
+
+binds {
+    Mod+T { spawn "xdg-terminal-exec"; }
+    Mod+D { spawn "omarchy"; spawn "menu"; }
+    Mod+Q { close-window; }
+    Mod+F { maximize-column; }
+    Mod+Shift+E { quit; }
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up    { focus-up; }
+    Mod+Down  { focus-down; }
+}
+
+layout {
+    gaps 8
+    center-focused-column "never"
+}
