@@ -54,6 +54,21 @@ Click the `Hypr` / `Niri` chip in the bar to open the switcher.
 ~/.config/omarchy/plugins/local.niri-switch/switcher.sh switch hyprland # back to Hyprland
 ```
 
+## Switching back from Niri (no Omarchy bar there)
+
+`install.sh` also drops these in (user files, no root needed):
+
+- `~/.config/illogical-impulse/actions/switch-to-omarchy` — official iNiR
+  GlobalActions user script. Press `Mod+Space`, type **`/switch`** (or
+  `/omarchy`), Enter. Auth via GUI polkit dialog, then straight into
+  Hyprland. Also runnable headless: `inir globalActions run custom-switch-to-omarchy`.
+- `~/.local/share/applications/switch-to-omarchy.desktop` and
+  `switch-to-niri.desktop` — plain launcher entries, so typing "switch" in
+  any app search (iNiR start menu, Omarchy menu, fuzzel…) finds them.
+
+Restart the iNiR shell after installing to pick up the `/switch` command:
+`systemctl --user restart inir.service`.
+
 ## Notes
 
 - Omarchy's bar workspaces widget is Hyprland-specific

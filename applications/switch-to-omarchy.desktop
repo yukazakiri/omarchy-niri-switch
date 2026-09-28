@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Switch to Omarchy (Hyprland)
+Comment=Set login target to Omarchy Hyprland and switch now
+Exec=$HOME/.config/omarchy/plugins/local.niri-switch/switcher.sh switch hyprland
+Icon=computer
+Terminal=false
+Type=Application
+Categories=System;
+Keywords=switch;omarchy;hyprland;compositor;session;desktop;
+NoDisplay=false
+StartupNotify=false

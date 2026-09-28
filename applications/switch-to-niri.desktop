@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Switch to Niri
+Comment=Set login target to Niri and switch now
+Exec=$HOME/.config/omarchy/plugins/local.niri-switch/switcher.sh switch niri
+Icon=computer
+Terminal=false
+Type=Application
+Categories=System;
+Keywords=switch;niri;compositor;session;desktop;
+NoDisplay=false
+StartupNotify=false

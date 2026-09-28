@@ -1,0 +1,8 @@
+#!/bin/bash
+# iNiR GlobalAction: Switch to Omarchy (Hyprland).
+# Install to ~/.config/illogical-impulse/actions/switch-to-omarchy (chmod +x).
+# Appears in the overview launcher (Mod+Space) action mode: type "/switch".
+# No terminal here, so SDDM-target auth goes through the polkit GUI agent.
+# SDDM Relogin=true logs straight back into Hyprland — no picker, no password.
+set -u
+exec "$HOME/.config/omarchy/plugins/local.niri-switch/switcher.sh" switch hyprland "$@"
